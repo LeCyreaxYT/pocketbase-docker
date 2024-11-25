@@ -12,7 +12,13 @@ RUN wget https://github.com/pocketbase/pocketbase/releases/download/v${VERSION}/
     && chmod +x /pocketbase
 
 FROM alpine:3
-RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
+
+# Install necessary packages and configure timezone
+RUN apk update && apk add --no-cache ca-certificates tzdata \
+    && cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime \
+    && echo "Europe/Berlin" > /etc/timezone \
+    && apk del tzdata \
+    && rm -rf /var/cache/apk/*
 
 EXPOSE 80
 
